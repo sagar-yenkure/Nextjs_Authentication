@@ -6,21 +6,21 @@ const Authbox = () => {
   const links = [
     { id: "1", logo: "/svg/google.svg", msg: "Connect with Google" },
     { id: "2", logo: "/svg/microsoft.svg", msg: "Connect with Microsoft" },
-    { id: "3", logo: "/svg/apple.svg", msg: "Connect with Apple" },
+    // { id: "3", logo: "/svg/apple.svg", msg: "Connect with Apple" },
   ];
 
   return (
-    <div className=" flex justify-center flex-col p-2">
+    <div className=" flex justify-center flex-col p-3 bg-white h-full dark:bg-black dark:border rounded-md">
       <div className=" flex justify-center p-2">
 
-      <h1 className="text-black font-bold">Next-Auth</h1>
+      <h1 className="text-black dark:text-white font-bold">Next-Auth</h1>
       </div>
       {links.map((link) => {
         return (
-          <button id={link.id} className="p-1">
+          <button id={link.id} className="p-1 bg-white dark:bg-black">
             <div className="flex p-3 border space-x-3 border-gray-400 rounded-md ">
               <Image src={link.logo} alt="me" width="20" height="20" />
-              <h1>{link.msg}</h1>
+              <h1 className="text-black dark:text-white">{link.msg}</h1>
             </div>
           </button>
         );
@@ -41,7 +41,7 @@ const Authbox = () => {
           </Link>
           </button>
       </div>
-    
+  
     </div>
   );
 };

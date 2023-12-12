@@ -9,3 +9,4 @@ const dbconnection = async () => {
   }
 };
  
+export {dbconnection}
