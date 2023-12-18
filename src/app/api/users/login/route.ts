@@ -1,9 +1,10 @@
+// import { dbconnection } from "@/app/Database/dbconfig";
 import { dbconnection } from "@/app/Database/dbconfig";
 import { User } from "@/models/user.model";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken"
-import { JWT_TOKEN } from "@/app/Constants/requests";
+import jwt from "jsonwebtoken";
+
 dbconnection();
 //take the body
 //cheack body is not empty
@@ -25,23 +26,32 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const existuser = await User.findOne({email});
+    const existuser = await User.findOne({ email });
     if (!existuser) {
       return NextResponse.json(
-        { message: "User do not exist , please rejister"},  { status: 300 }
+        { message: "User do not exist , please rejister" },
+        { status: 300 }
       );
     }
-
     const ispassword = await bcrypt.compare(password, existuser.password);
     if (!ispassword) {
-      return NextResponse.json({ message: "Password invalid" },  { status: 300 });
+      return NextResponse.json(
+        { message: "Password invalid" },
+        { status: 300 }
+      );
     }
-    const data ={
-        id:existuser.id
-    }
-    const Token = jwt.sign(data , JWT_TOKEN)
+    const data = {
+      id: existuser._id,
+      email:existuser.email
+    };
+    const Token = jwt.sign(data,process.env.JWT_TOKEN!,{expiresIn:"1d"});
 
-    return NextResponse.json({ message: "User logged succesfully" ,Token });
+    const response= NextResponse.json({ message: "User logged succesfully", Token });
+// setting the Cookie
+    response.cookies.set("token",Token,{
+      httpOnly:true
+    })
+    return response
 
   } catch (error) {
     return NextResponse.json({ error: "SERVER error" }, { status: 500 });

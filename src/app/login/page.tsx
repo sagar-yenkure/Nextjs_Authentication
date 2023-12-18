@@ -1,40 +1,37 @@
-"use client"
-import React, { useState } from 'react'
-import Link from 'next/link';
-import axios from 'axios';
-import { LOGIN_URL } from '../Constants/requests';
-import toast, { Toaster } from 'react-hot-toast';
-
+"use client";
+import React, { useState } from "react";
+import Link from "next/link";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { LOGIN_URL } from "../Constants/requests";
+import toast, { Toaster } from "react-hot-toast";
+import { InfinitySpin } from "react-loader-spinner";
 
 const loginpage = () => {
-  
-  const [cred, setcred] = useState({password: "", email: "", });
+  const [loading, setloading] = useState(false)
+  const router = useRouter();
+  const [cred, setcred] = useState({ password: "", email: "" });
 
-  const handleChange = (e:any) => {
-    setcred({...cred, [e.target.name]:e.target.value});
+  const handleChange = (e: any) => {
+    setcred({ ...cred, [e.target.name]: e.target.value });
   };
 
-  const handlelogin =async()=>{
+  const handlelogin = async () => {
     try {
-      const response = await axios.post(LOGIN_URL,cred)
-      console.log(response.data)
-      if (response) {
-        toast.success(response.data.message,
-          {
-            duration: 6000,
-          }
-        );
-      }
-      
-    } catch (error:any) {
+      setloading(true)
+      const response = await axios.post(LOGIN_URL, cred);
+      // console.log(response.data); 
+      toast.success(response.data.message);
+      setloading(false)
+      router.push("profile");
+    } catch (error: any) {
       toast.error(error.response.data.message);
-      
     }
+  };
 
-  }
   return (
-<>
-<div className="body">
+    <>
+      <div className="body">
         <Toaster position="top-center" reverseOrder={false} />
         {/* logo section */}
 
@@ -44,7 +41,11 @@ const loginpage = () => {
             <div className="w-[22rem]">
               <div className="head">
                 <h1 className="font-bold flex justify-center text-3xl mb-5 ">
-                  Login your account
+                {loading ? (
+                    <InfinitySpin width="100" color="#10a37f" />
+                  ) : (
+                    " Login to account"
+                  )}
                 </h1>
               </div>
               {/* {/emial and btn  */}
@@ -73,7 +74,10 @@ const loginpage = () => {
                     className="mt-2 p-3 w-full border-2 border-gray-300 rounded-md focus:outline-none focus:border-blue-200"
                   />
                 </div>
-                <button onClick={handlelogin} className="bg-[#10a37f] md:px-[3rem] rounded-md text-bold text-white py-2 md:py-3 p-1">
+                <button
+                  onClick={handlelogin}
+                  className="bg-[#10a37f] md:px-[3rem] rounded-md text-bold text-white py-2 md:py-3 p-1"
+                >
                   Log in
                 </button>
               </div>
@@ -92,8 +96,8 @@ const loginpage = () => {
           {/* terms and policy section at bottom */}
         </div>
       </div>
-</>
-  )
-}
+    </>
+  );
+};
 
-export default loginpage
+export default loginpage;

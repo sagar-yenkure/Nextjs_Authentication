@@ -6,7 +6,9 @@ import { useRouter } from "next/navigation";
 import { SIGNUP_URL } from "../Constants/requests";
 import toast, { Toaster } from "react-hot-toast";
 
+import { InfinitySpin } from "react-loader-spinner";
 const signuppage = () => {
+  const [loading, setloading] = useState(false)
   const router = useRouter();
   const [cred, setcred] = useState({ password: "", email: "" });
 
@@ -15,19 +17,14 @@ const signuppage = () => {
   };
 
   const handlesignup = async () => {
+    setloading(true)
     try {
       const response = await axios.post(SIGNUP_URL, cred);
       if (response) {
-        toast.success(
-          "User registerd ! redirecting to login page in 3 seconds",
-          {
-            duration: 6000,
-          }
-        );
+        toast.success(response.data.message);
       }
-      setTimeout(() => {
-        router.push("login");
-      }, 4000);
+
+      router.push("login");
     } catch (error: any) {
       toast.error(error.response.data.message);
       // console.log(error.response.data.message);
@@ -39,13 +36,21 @@ const signuppage = () => {
       <div className="body">
         {/* logo section */}
         <Toaster />
+        <h1></h1>
         <div className=" flex justify-center  my-[8rem]">
           {/* signup section */}
           <div className="signup__bx flex flex-col p-[3rem]">
             <div className="w-[22rem]">
               <div className="head">
-                <h1 className="font-bold flex justify-center text-3xl mb-5 ">
-                  Create your account
+                <h1 className="font-bold flex justify-center flex-col items-center text-3xl ">
+                  {loading ? (
+                    <div className="flex justify-center items-center pr-10">
+ 
+                    <InfinitySpin width="100" color="#10a37f" />
+                    </div>
+                  ) : (
+                    " Create your account"
+                  )}
                 </h1>
               </div>
               {/* {/emial and btn  */}
@@ -71,7 +76,7 @@ const signuppage = () => {
                   />
                 </div>
                 <button
-                  disabled={(cred.email.length & cred.password.length) == 0}
+                  disabled={(cred.email.length && cred.password.length) === 0}
                   onClick={handlesignup}
                   className="bg-[#10a37f] md:px-[3rem] rounded-md text-bold text-white py-2 md:py-3 p-1"
                 >

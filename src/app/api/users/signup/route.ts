@@ -2,8 +2,7 @@ import { dbconnection } from "@/app/Database/dbconfig";
 import { User } from "@/models/user.model";
 import { NextRequest, NextResponse } from "next/server";
 import bcryptjs from "bcryptjs";
-import { JWT_TOKEN } from "@/app/Constants/requests";
-import jwt from "jsonwebtoken"
+import { sendMail } from "@/helper/mailer";
 
 dbconnection();
 //take the body
@@ -25,29 +24,31 @@ export async function POST(request: NextRequest) {
         { status: 300 }
       );
     }
-    const user = await User.findOne({email});
+    const user = await User.findOne({ email });
     if (user) {
       return NextResponse.json(
-        {message: `user with ${email} already exists` },
+        { message: `user with ${email} already exists` },
         { status: 301 }
       );
     }
     // creating hash password
     const salt = await bcryptjs.genSalt(10);
-    const hashpass = await bcryptjs.hash(password,salt);
+    const hashpass = await bcryptjs.hash(password, salt);
 
     const newUser = await User.create({
       email: email,
       password: hashpass,
     });
-    const data ={
-      id:newUser.id
-  }
-  const Token = jwt.sign(data , JWT_TOKEN)
 
-    return NextResponse.json({message:"user created succesfully ",newUser,Token})
+    await sendMail({
+      email:email,
+      mailtype: "verify",
+      userID: newUser._id,
+    });
+
+    return NextResponse.json({ message: "Signup succesfully ! please verify your email ", newUser });
   } catch (error: any) {
-      console.log(error)
-    return NextResponse.json({error:"SERVER error"}, { status: 500 });
+    console.log(error);
+    return NextResponse.json({ error: "SERVER error" }, { status: 500 });
   }
 }
