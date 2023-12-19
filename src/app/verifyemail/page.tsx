@@ -22,8 +22,6 @@ export default function verifyEmail() {
   useEffect(() => {
     const SearchToken = window.location.search.split("=")[1];
     setToken(SearchToken);
-    // console.log("the token is",SearchToken)
-    // console.log("the token are",Token)
   }, []);
 
   

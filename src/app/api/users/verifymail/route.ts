@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
 
     const user = await User.findOne({
       VerifyToken:Token ,
-      // VerifyTokenExpity: { $gt: Date.now() },
+      VerifyTokenExpity: { $gt: Date.now() },
     });
 
     if (!user) {

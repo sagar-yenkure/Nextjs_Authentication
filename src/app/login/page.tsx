@@ -90,6 +90,14 @@ const loginpage = () => {
                   <Link href="/signup">Sign up</Link>
                 </button>
               </div>
+
+              <div className=" flex justify-center">
+                <p>forgot password ?</p>
+                <button className="text-[#10a37f]">
+                  {" "}
+                  <Link href="/forgotpassword">reset</Link>
+                </button>
+              </div>
             </div>
           </div>
 

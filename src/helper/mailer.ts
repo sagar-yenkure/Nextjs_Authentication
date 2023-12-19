@@ -36,11 +36,12 @@ export const sendMail = async ({ email, mailtype, userID }: any) => {
         mailtype === "verify" ? "Verify Your Email" : "Reset Your Password",
       html: `<P>Click <a href="${
         process.env.HOST
-      }/verifyemail?token=${hashedToken}">| here |</a> to ${
+      }/${mailtype === "verify" ?"verifyemail":"changepassword"}?token=${hashedToken}">| here |</a> to ${
         mailtype === "verify" ? "Verify Your Email" : "Reset Your Passwors"
       } <br>
       or copy paste the below url in browser
-      ${process.env.HOST}/verifyemail?token=${hashedToken}
+      <br>
+      ${process.env.HOST}/${mailtype === "verify" ?"verifyemail":"changepassword"}?token=${hashedToken}
 
 
       <P/>`
